@@ -1,9 +1,11 @@
+const DEFAULT_API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 function base(): string {
   if (typeof localStorage !== "undefined") {
     const override = localStorage.getItem("vetted-api");
     if (override) return override;
   }
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  return DEFAULT_API;
 }
 
 export const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -91,7 +93,7 @@ export interface CandidateDetail {
   masked_text: string;
 }
 
-async function json<T>(res: Response): Promise<T> {
+async function parse<T>(res: Response): Promise<T> {
   if (res.status === 401 && typeof window !== "undefined") {
     clearSession();
     // Full navigation (not router.push) intentionally: resets all cached page
@@ -110,6 +112,29 @@ function headers(extra?: Record<string, string>): Record<string, string> {
   return h;
 }
 
+/**
+ * Single request layer. If a saved Settings override points at a dead host
+ * (old tunnel URL, stopped server), retry once against the built-in default
+ * instead of leaving the UI bricked. HTTP errors pass through untouched —
+ * only network-level failures trigger the fallback.
+ */
+async function req<T>(path: string, init?: RequestInit): Promise<T> {
+  const primary = base();
+  const attempt = async (root: string): Promise<Response> =>
+    fetch(root + path, {
+      ...init,
+      headers: headers((init?.headers as Record<string, string>) || undefined),
+    });
+  try {
+    return await parse<T>(await attempt(primary));
+  } catch (e) {
+    if (e instanceof TypeError && primary !== DEFAULT_API) {
+      return parse<T>(await attempt(DEFAULT_API));
+    }
+    throw e;
+  }
+}
+
 export interface JobDetail extends JobSummary {
   jd_text: string;
   min_years: number;
@@ -123,58 +148,49 @@ export async function createJob(payload: {
   preferred?: string[];
   min_years?: number;
 }): Promise<JobDetail> {
-  const res = await fetch(apiUrl() + "/jobs", {
+  return req<JobDetail>("/jobs", {
     method: "POST",
-    headers: headers({ "Content-Type": "application/json" }),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-  return json<JobDetail>(res);
 }
 
 export async function listJobs(): Promise<{ jobs: JobSummary[] }> {
-  const res = await fetch(apiUrl() + "/jobs", { cache: "no-store", headers: headers() });
-  return json<{ jobs: JobSummary[] }>(res);
+  return req<{ jobs: JobSummary[] }>("/jobs", { cache: "no-store" });
 }
 
 export async function getJob(jobId: string): Promise<JobDetail> {
-  const res = await fetch(apiUrl() + "/jobs/" + jobId, { cache: "no-store", headers: headers() });
-  return json<JobDetail>(res);
+  return req<JobDetail>(`/jobs/${jobId}`, { cache: "no-store" });
 }
 
 export async function getRanking(jobId: string): Promise<{ ranking: RankRow[]; pending: { id: string; status: string }[] }> {
-  const res = await fetch(apiUrl() + "/jobs/" + jobId + "/ranking", { cache: "no-store", headers: headers() });
-  return json<{ ranking: RankRow[]; pending: { id: string; status: string }[] }>(res);
+  return req<{ ranking: RankRow[]; pending: { id: string; status: string }[] }>(`/jobs/${jobId}/ranking`, { cache: "no-store" });
 }
 
 export async function getDuplicates(jobId: string): Promise<{ pairs: { a: string; b: string; kind: string; score: number }[] }> {
-  const res = await fetch(apiUrl() + "/jobs/" + jobId + "/duplicates", { cache: "no-store", headers: headers() });
-  return json<{ pairs: { a: string; b: string; kind: string; score: number }[] }>(res);
+  return req<{ pairs: { a: string; b: string; kind: string; score: number }[] }>(`/jobs/${jobId}/duplicates`, { cache: "no-store" });
 }
 
 export async function uploadResumes(jobId: string, files: FileList | File[]): Promise<{ candidate_ids: string[] }> {
   const fd = new FormData();
   Array.from(files).forEach((f) => fd.append("files", f));
-  const res = await fetch(apiUrl() + "/jobs/" + jobId + "/resumes", { method: "POST", body: fd, headers: headers() });
-  return json<{ candidate_ids: string[] }>(res);
+  return req<{ candidate_ids: string[] }>(`/jobs/${jobId}/resumes`, { method: "POST", body: fd });
 }
 
 export async function getCandidate(cid: string): Promise<CandidateDetail> {
-  const res = await fetch(apiUrl() + "/candidates/" + cid, { cache: "no-store", headers: headers() });
-  return json<CandidateDetail>(res);
+  return req<CandidateDetail>(`/candidates/${cid}`, { cache: "no-store" });
 }
 
 export async function getInterview(cid: string): Promise<{ questions: string[] }> {
-  const res = await fetch(apiUrl() + "/candidates/" + cid + "/interview-questions", { cache: "no-store", headers: headers() });
-  return json<{ questions: string[] }>(res);
+  return req<{ questions: string[] }>(`/candidates/${cid}/interview-questions`, { cache: "no-store" });
 }
 
 export async function overrideCandidate(cid: string, new_decision: string, reason: string): Promise<{ ok: boolean }> {
-  const res = await fetch(apiUrl() + "/candidates/" + cid + "/override", {
+  return req<{ ok: boolean }>(`/candidates/${cid}/override`, {
     method: "POST",
-    headers: headers({ "Content-Type": "application/json" }),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ new_decision, reason }),
   });
-  return json<{ ok: boolean }>(res);
 }
 
 /** Authenticated CSV download: plain <a href> cannot attach the Bearer token. */
@@ -193,24 +209,25 @@ export async function exportCsv(jobId: string, filename: string): Promise<void> 
 }
 
 export async function login(email: string, password: string): Promise<{ id: string; email: string; token: string }> {
-  const res = await fetch(apiUrl() + "/auth/login", {
+  return req<{ id: string; email: string; token: string }>("/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  return json<{ id: string; email: string; token: string }>(res);
 }
 
 export async function register(email: string, password: string): Promise<{ id: string; email: string; token: string }> {
-  const res = await fetch(apiUrl() + "/auth/register", {
+  return req<{ id: string; email: string; token: string }>("/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
-  return json<{ id: string; email: string; token: string }>(res);
 }
 
 export async function deleteCandidate(cid: string): Promise<{ ok: boolean }> {
-  const res = await fetch(apiUrl() + "/candidates/" + cid, { method: "DELETE", headers: headers() });
-  return json<{ ok: boolean }>(res);
+  return req<{ ok: boolean }>(`/candidates/${cid}`, { method: "DELETE" });
+}
+
+export function exportCsvUrl(jobId: string) {
+  return apiUrl() + "/jobs/" + jobId + "/export.csv";
 }

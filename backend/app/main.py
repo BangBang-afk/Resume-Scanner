@@ -40,7 +40,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 # In-memory rate limit: RATE_MAX requests / 60s per client IP (health exempt).
 # The per-IP map is pruned each request so spoofed-IP floods cannot grow memory.
 _RATE: dict[str, list[float]] = {}
-RATE_MAX = int(os.getenv("RATE_MAX", "120"))
+RATE_MAX = int(os.getenv("RATE_MAX", "600"))
 RATE_WINDOW = 60.0
 _MAX_TRACKED_IPS = 10_000
 
