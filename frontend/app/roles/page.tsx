@@ -17,7 +17,15 @@ export default function RolesPage() {
   }, []);
   return (
     <div>
-      <h1 className="font-display text-4xl">Roles</h1>
+      <div className="flex items-end justify-between">
+        <h1 className="font-display text-4xl">Roles</h1>
+        <Link href="/" className="vetted-btn-dark text-xs">
+          + New role
+        </Link>
+      </div>
+      <p className="mt-1 text-xs" style={{ color: "var(--muted)" }}>
+        A role is a job + its required and preferred skills. New roles are created on the Scan page.
+      </p>
       {err && (
         <div className="vetted-panel mt-2 p-3 text-xs text-red-600" role="alert">
           {err} {" "}

@@ -103,8 +103,11 @@ export default function RankedPage({ params }: { params: Promise<{ id: string }>
     }
   }
 
-  const shown = rows.filter((r) =>
-    filter === "all" ? true : filter === "short" ? r.final_decision === "shortlist" : (r.flags?.length || 0) > 0
+  const [query, setQuery] = useState("");
+  const shown = rows.filter(
+    (r) =>
+      (filter === "all" ? true : filter === "short" ? r.final_decision === "shortlist" : (r.flags?.length || 0) > 0) &&
+      (query.trim() === "" || nameOf(r).toLowerCase().includes(query.trim().toLowerCase()))
   );
   const median = rows.length ? rows[Math.floor(rows.length / 2)].total : "—";
   const above = rows.filter((r) => r.total >= 85).length;
@@ -147,6 +150,23 @@ export default function RankedPage({ params }: { params: Promise<{ id: string }>
           </button>
         </div>
       </div>
+      <div className="mt-3 flex items-center gap-2">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search candidates…"
+          aria-label="Search candidates by name"
+          className="vetted-input max-w-xs text-xs"
+        />
+        {msg && (
+          <p className="text-xs text-red-600" role="alert">
+            {msg}{" "}
+            <button className="underline" onClick={() => { setMsg(""); refresh(); }}>
+              Retry
+            </button>
+          </p>
+        )}
+      </div>
 
       <div className="vetted-panel mt-4 grid grid-cols-4 p-4 text-center">
         {[
@@ -163,11 +183,6 @@ export default function RankedPage({ params }: { params: Promise<{ id: string }>
           </div>
         ))}
       </div>
-      {msg && (
-        <p className="mt-2 text-xs text-red-600" role="alert">
-          {msg}
-        </p>
-      )}
       {pending.length > 0 && (
         <p className="mt-2 text-xs" style={{ color: "var(--muted)" }}>
           Still scoring: {pending.map((p) => p.id.slice(0, 6) + ":" + p.status).join(", ")}

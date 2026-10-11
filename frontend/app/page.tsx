@@ -21,6 +21,7 @@ export default function ScanPage() {
   );
   const [files, setFiles] = useState<FileList | null>(null);
   const [busy, setBusy] = useState(false);
+  const [phase, setPhase] = useState("");
   const [err, setErr] = useState("");
 
   useEffect(() => {
@@ -48,6 +49,7 @@ export default function ScanPage() {
     setBusy(true);
     setErr("");
     try {
+      setPhase("Creating role…");
       const job = await createJob({
         title,
         jd_text: jd,
@@ -55,12 +57,15 @@ export default function ScanPage() {
         preferred: preferred.split(",").map((s) => s.trim()).filter(Boolean),
         min_years: years,
       });
+      setPhase(`Uploading ${files.length} file${files.length === 1 ? "" : "s"}…`);
       await uploadResumes(job.id, files);
+      setPhase("Scoring…");
       router.push("/jobs/" + job.id + (blind ? "?blind=1" : ""));
     } catch {
       setErr("Backend unreachable on :8000.");
     } finally {
       setBusy(false);
+      setPhase("");
     }
   }
 
@@ -164,11 +169,15 @@ export default function ScanPage() {
             <input type="checkbox" checked={blind} onChange={(e) => setBlind(e.target.checked)} />
           </label>
           <button onClick={runScan} disabled={busy} className="vetted-btn-dark mt-3 w-full text-sm disabled:opacity-50">
-            {busy ? "Scanning…" : "Run scan →"}
+            {busy ? phase || "Scanning…" : "Run scan →"}
           </button>
           {err && (
             <p className="mt-2 text-xs text-red-600" role="alert">
-              {err}
+              {err} Check the backend is running, then{" "}
+              <button className="underline" onClick={() => location.reload()}>
+                retry
+              </button>
+              .
             </p>
           )}
         </div>
