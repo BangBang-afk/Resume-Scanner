@@ -1,0 +1,19 @@
+Aditya Shah
+aditya.shah@mail.com
++91 98666 77788
+
+Skills:
+Python, Django, PostgreSQL, Docker, AWS, SQL
+
+Experience:
+Backend Developer, EduPro, 2019-06 to present
+6 years Python backend with Django, PostgreSQL tuning, Docker on AWS. Has not worked with async API frameworks.
+
+Projects:
+LMS backend: Python Django monolith, PostgreSQL, Docker, AWS. 200k users.
+
+Education:
+B.Tech Computer Science, 2019
+
+Certifications:
+AWS Solutions Architect

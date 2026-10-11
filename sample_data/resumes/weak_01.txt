@@ -1,0 +1,12 @@
+Farhan Ali
+farhan.ali@mail.com
+
+Skills:
+HTML, CSS, JavaScript
+
+Experience:
+Frontend Intern, WebStudio, 2023-01 to 2023-07
+6 months building landing pages with HTML and CSS.
+
+Education:
+B.Sc Computer Science, 2023

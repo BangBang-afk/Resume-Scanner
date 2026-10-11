@@ -1,0 +1,16 @@
+Arjun M.
+arjun.mehta@mail.com
++91 98111 22233
+
+Skills:
+Python, FastAPI, PostgreSQL, Docker, AWS, SQL
+
+Experience:
+Senior Backend Developer, FinEdge, 2020-01 to present
+Built Python FastAPI services handling 1M requests daily. 5 years Python backend APIs, PostgreSQL schema design, Docker deploys to AWS.
+
+Projects:
+Payments API: Python FastAPI backend with PostgreSQL, Docker on AWS. Cut latency 40 percent.
+
+Education:
+B.Tech Computer Science, 2019

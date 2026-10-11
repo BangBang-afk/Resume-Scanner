@@ -1,0 +1,13 @@
+resume,decision
+strong_01.txt,shortlist
+strong_02.txt,shortlist
+tie_a.txt,review
+tie_b.txt,review
+terminology.txt,review
+missing_musthave.txt,review
+poor_format.txt,reject
+duplicate_of_strong01.txt,reject
+weak_01.txt,reject
+weak_02.txt,reject
+nameswap_a.txt,review
+nameswap_b.txt,review

@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f3eee1;
+  --panel: #faf7ee;
+  --card: #fffdf6;
+  --ink: #1c1a14;
+  --muted: #837d69; /* was #8a8471 on --card: contrast ≥ 4.5:1 */
+  --line: #e2d9c2;
+  --accent: #d8481f;
+  --green: #d7efbd;
+  --green-ink: #2f6b1f;
+  --yellow: #f6e8a4;
+  --yellow-ink: #67510b;
+  --blue: #d5eaea;
+  --blue-ink: #155e63;
+  --red: #f0a8a0;
+  --red-ink: #7d1a10;
+  --bar: #1c1a14;
+  --focus: #8a3a14;
+}
+
+.dark {
+  --bg: #0a0c1b;
+  --panel: #1e1e1b;
+  --card: #23231f;
+  --ink: #edeae0;
+  --muted: #a0a8ba; /* was #8b93a7: below 4.5:1 on --panel */
+  --line: #2e3138;
+  --accent: #e0562f;
+  --green: #17351f;
+  --green-ink: #a9e6b8;
+  --yellow: #4a3f14;
+  --yellow-ink: #f2dd8e;
+  --blue: #143b44;
+  --blue-ink: #a8e2e6;
+  --red: #5a1f1c;
+  --red-ink: #ffb4ab;
+  --bar: #edeae0;
+  --focus: #f2a37e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Visible, consistent focus ring on every interactive element. */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link: first tab stop, visually hidden until focused. */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 6px 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.font-display {
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.01em;
+}
+
+.vetted-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.vetted-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.vetted-input {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  color: var(--ink);
+}
+
+.vetted-btn-dark {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+}
+
+.vetted-btn-ghost {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+}
+
+.vetted-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--muted) 30%, transparent);
+}
+
+.vetted-bar > div {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bar);
+}

@@ -1,0 +1,17 @@
+Aarav Sharma
+aarav.sharma@mail.com
++91 98765 43210
+He is a backend developer.
+
+Skills:
+Python, FastAPI, PostgreSQL, Docker
+
+Experience:
+Backend Developer, CloudNine, 2021-02 to present
+He built Python FastAPI backend APIs for 3 years. His work includes PostgreSQL and Docker. Mr. Sharma led API migrations.
+
+Projects:
+Billing API: Python FastAPI with PostgreSQL, Docker.
+
+Education:
+B.Tech Computer Science, 2020

@@ -1,0 +1,16 @@
+Kavya Nair
+kavya.nair@mail.com
++91 98222 33344
+
+Skills:
+Python, FastAPI, PostgreSQL, Docker, AWS, SQL
+
+Experience:
+Backend Developer, ShopKart, 2021-06 to present
+4 years Python backend development. Design Python FastAPI backend services, PostgreSQL schema work, ship tested APIs, Docker containers on AWS.
+
+Projects:
+Orders service: design Python FastAPI backend APIs, PostgreSQL schema, tested APIs, Dockerized, deployed on AWS.
+
+Education:
+M.Tech Software Engineering, 2021

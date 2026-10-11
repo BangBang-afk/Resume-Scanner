@@ -1,0 +1,21 @@
+# Root build context (only used when building from repo root; per-service
+# .dockerignore files cover backend/ and frontend/ contexts).
+.git
+.gitignore
+node_modules
+**/node_modules
+**/.next
+**/__pycache__
+**/.pytest_cache
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.log
+*.db
+*.sqlite3
+_run_*.log
+_run_*.err.log
+README.md
+CHANGELOG.md

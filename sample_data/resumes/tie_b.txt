@@ -1,0 +1,16 @@
+Sneha Kulkarni
+sneha.k@mail.com
++91 98444 55566
+
+Skills:
+Python, FastAPI, PostgreSQL, AWS
+
+Experience:
+Backend Developer, MediSync, 2021-03 to present
+3 years Python FastAPI backend APIs, PostgreSQL, AWS deploys.
+
+Projects:
+Records API: Python FastAPI backend, PostgreSQL store, hosted on AWS.
+
+Education:
+B.Tech Computer Science, 2020

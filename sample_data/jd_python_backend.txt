@@ -1,0 +1,8 @@
+Python Backend Developer
+
+We need a Python backend developer to build and scale APIs.
+
+Required: Python, FastAPI, PostgreSQL. 3 years experience building backend APIs.
+Preferred: Docker, AWS.
+
+Responsibilities: design Python FastAPI backend services, PostgreSQL schema work, ship Docker containers to AWS, write tested APIs.

@@ -1,0 +1,16 @@
+Vikram Rao
+vikram.rao@mail.com
++91 98555 66677
+
+Skills:
+Python, ML, Postgres, Docker, AWS
+
+Experience:
+ML Engineer, DataWise, 2021-01 to present
+4 years Python backend APIs for machine learning serving. Built Python backend model APIs, Postgres storage, Docker images on AWS. Machine learning pipeline work.
+
+Projects:
+Model server: Python backend API serving machine learning models, Postgres logging, Docker deploy on AWS.
+
+Education:
+M.Sc Data Science, 2020

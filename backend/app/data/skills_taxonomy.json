@@ -1,0 +1,14 @@
+{
+  "machine learning": ["ml", "m.l."],
+  "javascript": ["js"],
+  "kubernetes": ["k8s"],
+  "postgresql": ["postgres", "psql"],
+  "python": ["py"],
+  "react": ["react.js", "reactjs"],
+  "typescript": ["ts"],
+  "docker": [],
+  "fastapi": [],
+  "django": [],
+  "sql": [],
+  "aws": ["amazon web services"]
+}

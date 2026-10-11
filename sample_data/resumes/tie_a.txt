@@ -1,0 +1,16 @@
+Rohan Iyer
+rohan.iyer@mail.com
++91 98333 44455
+
+Skills:
+Python, FastAPI, PostgreSQL, Docker
+
+Experience:
+Backend Developer, LogiTrack, 2021-01 to present
+3 years Python FastAPI backend work, PostgreSQL queries, Docker builds.
+
+Projects:
+Tracking API: Python FastAPI service with PostgreSQL and Docker.
+
+Education:
+B.Tech Information Technology, 2020
