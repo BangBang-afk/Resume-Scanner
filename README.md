@@ -38,3 +38,15 @@ Every data route requires a signed-in recruiter. The stack is unchanged — stdl
 - **raw_text retention:** original unmasked resume text is cleared after `PURGE_RAW_TEXT_AFTER_DAYS` days (default 30); masked text and scores stay. `0` disables.
 - **Delete per data-subject request:** `DELETE /candidates/{id}` (UI button on the candidate detail panel) removes the candidate, their overrides, and keeps a non-PII audit entry.
 - **Multi-worker note:** with `AUTH_SECRET` unset, tokens are boot-generated per process; set a shared value in `.env` when running more than one worker.
+
+## Host the backend (pairs with Vercel frontend)
+
+Vercel cannot host this API (SQLite disk + background scoring exceed serverless limits). Use Render (blueprint included):
+
+1. Render Dashboard → New → Blueprint → select repo (`render.yaml` found automatically)
+2. Deploy `shortlistiq-api`, copy its `https://...onrender.com` URL
+3. Render env: append `https://<your-app>.vercel.app` to `ALLOWED_ORIGINS`, redeploy
+4. Vercel project → Settings → Environment Variables: `NEXT_PUBLIC_API_URL=https://...onrender.com` → redeploy frontend
+5. Open Vercel URL from anywhere, register once, full app live
+
+Free tier sleeps when idle (first load ~50s). Demo data resets on restart — re-upload resumes via UI.

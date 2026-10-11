@@ -1,0 +1,20 @@
+# Render blueprint: backend API only (frontend lives on Vercel).
+# Dashboard → New → Blueprint → pick this repo. Then set ALLOWED_ORIGINS below
+# to your Vercel URL and deploy. Free tier sleeps when idle (~50s cold start).
+services:
+  - type: web
+    name: shortlistiq-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    envVars:
+      - key: LLM_PROVIDER
+        value: none
+      - key: RATE_MAX
+        value: 120
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000,http://127.0.0.1:3000
+        # CHANGE ME post-deploy: append https://<your-app>.vercel.app
+# NOTE: default SQLite DB lives on ephemeral disk — uploads reset on restart.
+# Fine for demos. For persistence, attach a Render Disk or Postgres and set DATABASE_URL.
