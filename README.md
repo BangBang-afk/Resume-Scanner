@@ -2,9 +2,9 @@
 
 AI-assisted resume screening: deterministic scoring, evidence-grounded explanations, recruiter override wins.
 
-1. Copy env: `cp .env.example .env` (add `GEMINI_API_KEY` or keep `LLM_PROVIDER=none`)
-2. Start all: `docker compose up --build`
-3. Open UI: `http://localhost:3000`, API: `http://localhost:8000/health`
+1. Run everything with one command: `python run.py` — boots the API (`:8000`) and the UI (`:3000`), seeds the demo job + 12 resumes on first run, opens your browser. Ctrl+C stops both. (Needs Python + Node installed; first run builds the frontend.)
+2. Or via Docker: copy env (`cp .env.example .env`), then `docker compose up --build`
+3. Sign in at `/login` (register once) — demo seed uses `demo@vetted.local` / `vetted-demo-2026`
 4. Demo: New job → paste JD → upload `sample_data/resumes/` → ranking → detail → override with reason → Export CSV
 5. Eval: `python eval/run_eval.py` (precision/recall/F1 + name-swap + timing)
 6. Backend tests: `pytest backend/tests/`

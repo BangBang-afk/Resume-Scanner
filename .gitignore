@@ -8,8 +8,8 @@ __pycache__/
 .pytest_cache/
 node_modules/
 .next/
-_run_*.log
-_run_*.err.log
+_run*.log
+_run*.err.log
 _demo_job.txt
 _demo.db
 _serve.py

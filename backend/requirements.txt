@@ -5,8 +5,10 @@ sqlalchemy==2.*
 psycopg[binary]==3.*
 pdfplumber
 python-docx
-spacy
-sentence-transformers
 numpy
+# Optional: semantic embeddings (code falls back to built-in vectors without these).
+# All quoted eval numbers used the fallback. Uncomment for production-grade similarity:
+# spacy
+# sentence-transformers
 pytest
 python-multipart
