@@ -163,6 +163,23 @@ export async function getJob(jobId: string): Promise<JobDetail> {
   return req<JobDetail>(`/jobs/${jobId}`, { cache: "no-store" });
 }
 
+export async function updateJob(jobId: string, payload: {
+  title?: string;
+  required?: string[];
+  preferred?: string[];
+  min_years?: number;
+}): Promise<{ ok: boolean; rescored: number }> {
+  return req<{ ok: boolean; rescored: number }>(`/jobs/${jobId}/skills`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteJob(jobId: string): Promise<{ ok: boolean; deleted_candidates: number }> {
+  return req<{ ok: boolean; deleted_candidates: number }>(`/jobs/${jobId}`, { method: "DELETE" });
+}
+
 export async function getRanking(jobId: string): Promise<{ ranking: RankRow[]; pending: { id: string; status: string }[] }> {
   return req<{ ranking: RankRow[]; pending: { id: string; status: string }[] }>(`/jobs/${jobId}/ranking`, { cache: "no-store" });
 }

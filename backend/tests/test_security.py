@@ -68,9 +68,11 @@ def test_security_headers_present():
 
 
 def test_rate_limit_trips():
+    from app.main import RATE_MAX
+
     cl = _client()
     # Rate limiter exempts /health only; gated 401s still count as requests.
-    statuses = [cl.get("/jobs/does-not-exist").status_code for _ in range(130)]
+    statuses = [cl.get("/jobs/does-not-exist").status_code for _ in range(RATE_MAX + 10)]
     assert 429 in statuses
     _restore_limiter_off()
 

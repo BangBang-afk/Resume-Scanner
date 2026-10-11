@@ -52,6 +52,7 @@ class JobIn(BaseModel):
 
 
 class SkillsIn(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=120)
     required: list[str] | None = Field(default=None, max_length=50)
     preferred: list[str] | None = Field(default=None, max_length=50)
     min_years: float | None = Field(default=None, ge=0, le=50)
@@ -83,9 +84,14 @@ def get_job(job_id: str, db: Session = Depends(get_db), user: User = Depends(get
 
 @router.put("/jobs/{job_id}/skills")
 def update_skills(job_id: str, payload: SkillsIn, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    from ..schemas import ResumeProfile
+    from ..services.scoring import score_candidate
+
     job = db.get(Job, job_id)
     if not job:
         raise HTTPException(404, "job not found")
+    if payload.title is not None:
+        job.title = payload.title.strip()
     if payload.required is not None:
         job.required_json = _skill_list(payload.required)
     if payload.preferred is not None:
@@ -95,7 +101,37 @@ def update_skills(job_id: str, payload: SkillsIn, db: Session = Depends(get_db),
     if payload.weights is not None:
         job.weights_json = payload.weights
     db.commit()
-    return {"ok": True}
+    # Details changed -> existing scores are stale. Re-score every finished
+    # candidate against the new skills so the ranking stays truthful.
+    rescored = 0
+    jd = {"required": job.required_json or [], "preferred": job.preferred_json or [],
+          "min_years": job.min_years or 2, "responsibilities_text": job.jd_text or "",
+          "required_degree_level": 1}
+    for c in db.query(Candidate).filter(Candidate.job_id == job_id, Candidate.status == "done").all():
+        try:
+            profile = ResumeProfile(**(c.profile_json or {}))
+            c.score_json = score_candidate(profile, c.relevant_years or 0.0, c.masked_text or "", jd)
+            rescored += 1
+        except Exception:
+            continue
+    db.commit()
+    return {"ok": True, "rescored": rescored}
+
+
+@router.delete("/jobs/{job_id}")
+def delete_job(job_id: str, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    job = db.get(Job, job_id)
+    if not job:
+        raise HTTPException(404, "job not found")
+    cands = db.query(Candidate).filter(Candidate.job_id == job_id).all()
+    for c in cands:
+        db.query(Override).filter(Override.candidate_id == c.id).delete()
+        db.delete(c)
+    db.delete(job)
+    db.add(AuditLog(event="job_deleted", payload_json={"job_id": job_id, "title": job.title,
+                                                       "candidates": len(cands), "by": user.email}))
+    db.commit()
+    return {"ok": True, "deleted_candidates": len(cands)}
 
 
 @router.post("/jobs/{job_id}/resumes")
