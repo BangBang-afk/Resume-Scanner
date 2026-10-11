@@ -18,3 +18,5 @@ _measure.py
 _verify_*.py
 *.tsbuildinfo
 hf-space/
+_tunnel.log
+-o
