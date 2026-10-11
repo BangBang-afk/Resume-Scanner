@@ -5,7 +5,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app ./app
 # Non-root: the app only needs to read its own code and bind a high port.
 RUN useradd --create-home --uid 1000 appuser \
-    && chown -R appuser:appuser /code
+    && mkdir -p /data \
+    && chown -R appuser:appuser /code /data
 USER appuser
 EXPOSE 8000
 # Shell form so hosts like Render/Railway can inject $PORT.

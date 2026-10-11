@@ -1,0 +1,30 @@
+# Fly.io: backend API with persistent SQLite (survives restarts, unlike Render free).
+# Steps: fly auth signup → fly launch (reuse this config) → fly volumes create
+# shortlistiq_data --size 1 → fly deploy → fly secrets set ALLOWED_ORIGINS=...
+app = "shortlistiq-api"
+
+[build]
+  dockerfile = "backend/Dockerfile"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.checks.alive]
+    path = "/health"
+    interval = "30s"
+    timeout = "5s"
+
+[[mounts]]
+  source = "shortlistiq_data"
+  destination = "/data"
+
+[env]
+  LLM_PROVIDER = "none"
+  RATE_MAX = "120"
+  DATABASE_URL = "sqlite:////data/shortlistiq.db"
+  ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000"
+  # Append https://<your-app>.vercel.app via: fly secrets set ALLOWED_ORIGINS="..."

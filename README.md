@@ -41,7 +41,17 @@ Every data route requires a signed-in recruiter. The stack is unchanged — stdl
 
 ## Host the backend (pairs with Vercel frontend)
 
-Vercel cannot host this API (SQLite disk + background scoring exceed serverless limits). Use Render (blueprint included):
+Vercel cannot host this API (SQLite disk + background scoring exceed serverless limits). Two hosts, pick one:
+
+**Option A — Fly.io (recommended, `fly.toml` included):** free shared VMs + 1 GB persistent volume, so demo data survives restarts.
+
+1. Install flyctl → `fly auth signup` → `cd shortlistiq` → `fly launch` (reuse config, pick region near you)
+2. `fly volumes create shortlistiq_data --size 1`
+3. `fly secrets set ALLOWED_ORIGINS="http://localhost:3000,http://127.0.0.1:3000,https://<your-app>.vercel.app"`
+4. `fly deploy`, copy `https://shortlistiq-api.fly.dev` (or your app name)
+5. Vercel env `NEXT_PUBLIC_API_URL=https://<name>.fly.dev` → redeploy frontend
+
+**Option B — Render (`render.yaml` included):**
 
 1. Render Dashboard → New → Blueprint → select repo (`render.yaml` found automatically)
 2. Deploy `shortlistiq-api`, copy its `https://...onrender.com` URL
